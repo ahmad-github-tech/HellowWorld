@@ -135,8 +135,8 @@ export default function App() {
               <Layers className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-tight text-slate-900">Nexus</h1>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest leading-none">Support System</p>
+              <h1 className="text-lg font-bold tracking-tight text-slate-900">Nexus Enterprise</h1>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest leading-none">Global Support Platform</p>
             </div>
           </div>
           
