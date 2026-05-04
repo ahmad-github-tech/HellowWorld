@@ -1,6 +1,6 @@
 {
-  "name": "Spring Boot Hello World",
-  "description": "A simple Spring Boot and Spring MVC project to display 'Hello World', designed for export to STS.",
+  "name": "Nexus IT Support System",
+  "description": "Multi-project IT support platform with smart dashboards, SLA tracking, and configuration modules.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["Dashboarding", "Ticket Management", "Project Onboarding"]
 }
