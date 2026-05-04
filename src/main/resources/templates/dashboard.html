@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nexus IT Support - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-slate-200 p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-xl">N</div>
+                <div>
+                    <h1 class="text-lg font-bold">Nexus</h1>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">IT Support</p>
+                </div>
+            </div>
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg">Dashboard</a>
+                <a href="/tickets" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Tickets</a>
+                <a href="/config" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Config</a>
+            </nav>
+        </aside>
+
+        <!-- Main -->
+        <main class="flex-1 p-10">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-2xl font-bold">Dashboard</h2>
+                <form action="/" method="get" class="flex items-center gap-4">
+                    <select name="project" onchange="this.form.submit()" class="bg-white border rounded-lg px-4 py-2 text-sm font-bold shadow-sm outline-none focus:ring-2 ring-indigo-500">
+                        <option value="all">All Projects</option>
+                        <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}" th:selected="${p.id == selectedProject}"></option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-4 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-1">Total Tickets</p>
+                    <p class="text-3xl font-bold" th:text="${totalCount}">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-1">Pending Actions</p>
+                    <p class="text-3xl font-bold text-orange-600" th:text="${openCount}">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-1">Weekly Growth</p>
+                    <p class="text-3xl font-bold text-indigo-600">+12%</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase mb-1">SLA Compliance</p>
+                    <p class="text-3xl font-bold text-emerald-600">98%</p>
+                </div>
+            </div>
+
+            <!-- Recent Activity Table -->
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="font-bold">Recent Tickets</h3>
+                    <a href="/tickets/new" class="text-xs font-bold text-indigo-600 hover:underline">+ Create Ticket</a>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
+                        <tr>
+                            <th class="px-6 py-4">Subject</th>
+                            <th class="px-6 py-4">Priority</th>
+                            <th class="px-6 py-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr th:each="t : ${tickets}" class="border-b last:border-0 hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-slate-900" th:text="${t.title}"></div>
+                                <div class="text-[10px] text-slate-400" th:text="${t.description}"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span th:class="${t.priority == 'Critical' ? 'text-red-600 font-bold' : (t.priority == 'High' ? 'text-orange-600 font-bold' : 'text-slate-500')}" th:text="${t.priority}"></span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 bg-slate-100 rounded-lg text-[10px] font-bold" th:text="${t.status}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

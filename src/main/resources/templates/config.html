@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nexus IT Support - Configure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-white border-r border-slate-200 p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-xl">N</div>
+                <h1 class="text-lg font-bold">Nexus</h1>
+            </div>
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Dashboard</a>
+                <a href="/tickets" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Tickets</a>
+                <a href="/config" class="flex items-center gap-3 px-4 py-3 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg">Config</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-10">
+            <h2 class="text-2xl font-bold mb-10">System Configuration</h2>
+
+            <div class="grid grid-cols-2 gap-10">
+                <!-- Project Onboarding -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold mb-6">Project Onboarding</h3>
+                    <form action="/projects/save" method="post" class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-slate-400 mb-1 block">Project Name</label>
+                            <input name="name" required class="w-full border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 ring-indigo-500" placeholder="e.g. Mobile App Dev">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold uppercase text-slate-400 mb-1 block">SLA Benchmark (Hours)</label>
+                            <input name="slaHours" type="number" required class="w-full border rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 ring-indigo-500" placeholder="24">
+                        </div>
+                        <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-lg text-sm font-bold hover:bg-slate-800 transition-all mt-4">Initialize Project</button>
+                    </form>
+
+                    <div class="mt-10 pt-10 border-t border-slate-100">
+                        <h4 class="text-[10px] font-bold uppercase text-slate-400 mb-4 tracking-widest">Active nodes</h4>
+                        <div class="space-y-2">
+                            <div th:each="p : ${projects}" class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-xl transition-all">
+                                <span class="text-sm font-bold" th:text="${p.name}"></span>
+                                <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg" th:text="${p.slaHours + 'h SLA'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Policy -->
+                <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
+                    <h3 class="text-lg font-bold mb-6 italic">SLA Matrix Integration</h3>
+                    <div class="space-y-6">
+                        <div class="bg-white/5 p-6 rounded-2xl">
+                            <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-4">Mapping Protocols</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between border-b border-white/10 pb-2 italic"><span>Critical</span> <span class="font-bold">2 Hours</span></div>
+                                <div class="flex justify-between border-b border-white/10 pb-2 italic"><span>High</span> <span class="font-bold">6 Hours</span></div>
+                                <div class="flex justify-between border-b border-white/10 pb-2 italic"><span>Medium</span> <span class="font-bold">12 Hours</span></div>
+                                <div class="flex justify-between italic"><span>Low</span> <span class="font-bold">24 Hours</span></div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed italic">
+                            These benchmarks apply globally to all onboarded projects. Smart escalations trigger automatically when benchmarks are breached.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nexus IT Support - Tickets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-white border-r border-slate-200 p-6 flex flex-col">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-xl">N</div>
+                <h1 class="text-lg font-bold">Nexus</h1>
+            </div>
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Dashboard</a>
+                <a href="/tickets" class="flex items-center gap-3 px-4 py-3 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg">Tickets</a>
+                <a href="/config" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Config</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-10">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-2xl font-bold">Tickets Management</h2>
+                <a href="/tickets/new" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">+ New Ticket</a>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
+                        <tr>
+                            <th class="px-6 py-4">ID</th>
+                            <th class="px-6 py-4">Subject</th>
+                            <th class="px-6 py-4">Project</th>
+                            <th class="px-6 py-4">Priority</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm border-t">
+                        <tr th:each="t : ${tickets}" class="border-b last:border-0 group hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 text-slate-400 font-mono" th:text="${'#' + t.id}"></td>
+                            <td class="px-6 py-4 font-bold" th:text="${t.title}"></td>
+                            <td class="px-6 py-4 text-slate-500" th:text="${t.projectId}"></td>
+                            <td class="px-6 py-4" th:text="${t.priority}"></td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 bg-slate-100 rounded-lg text-[10px] font-bold" th:text="${t.status}"></span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                                    <a th:href="@{'/tickets/edit/' + ${t.id}}" class="text-indigo-600 hover:underline font-bold">Edit</a>
+                                    <a href="#" th:onclick="'if(confirm(\'Expunge this record permanently?\')) window.location.href=\'/tickets/delete/' + ${t.id} + '\''" class="text-red-600 hover:underline font-bold">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

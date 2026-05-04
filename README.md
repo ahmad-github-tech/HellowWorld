@@ -1,33 +1,30 @@
-# Spring Boot Hello World Project
+# Nexus IT Support System (Spring Boot + Spring MVC)
 
-This is a simple Java web project built with Spring Boot and Spring MVC.
+This is a pure Java web application designed to run entirely within **Spring Tool Suite (STS)**. It uses server-side rendering with Thymeleaf and Spring MVC.
+
+## Key Features
+- **Smart Dashboard**: Filtered metrics by project and priority.
+- **Ticket Lifecycle**: Full CRUD operations for service tickets.
+- **Configuration Module**: Onboard projects and manage SLA benchmarks.
+- **Thymeleaf UI**: Server-side rendering using Spring MVC and Thymeleaf.
+- **Tailwind Aesthetic**: Modern, responsive design using CDN-based Tailwind CSS.
 
 ## Project Structure
+- `pom.xml`: Maven configuration (Spring Boot 3.2.5 + Web + Thymeleaf).
+- `src/main/java/com/example/demo/HelloController.java`: The main Spring MVC controller handling all routing and data logic.
+- `src/main/resources/templates/`: Pure HTML templates using Thymeleaf syntax.
+- `src/main/java/com/example/demo/model/`: Java POJOs for Tickets and Projects.
 
-- `pom.xml`: Maven configuration file with necessary dependencies.
-- `src/main/java/com/example/demo/DemoApplication.java`: The main entry point of the Spring Boot application.
-- `src/main/java/com/example/demo/HelloController.java`: A simple REST controller that serves "Hello World" at the root path (`/`).
-- `src/main/resources/application.properties`: Configuration file for the application.
-
-## Prerequisites
-
-- Java 17 or higher.
-- A Java IDE (Spring Tool Suite, IntelliJ IDEA, or Eclipse).
-
-## How to Import into STS (Spring Tool Suite)
-
-1. **Export the Project**: Use the "Export to ZIP" option in AI Studio.
-2. **Extract**: Unzip the folder on your local machine.
+## How to use in Spring Tool Suite (STS)
+1. **Export**: Use the **Settings > Export to ZIP** option in AI Studio.
+2. **Extract**: Unzip the project folder on your machine.
 3. **Import**:
    - Open STS.
-   - Go to `File > Import...`.
-   - Select `Maven > Existing Maven Projects`.
-   - Browse to the unzipped root directory (where `pom.xml` is located).
-   - Click `Finish`.
+   - `File > Import... > Maven > Existing Maven Projects`.
+   - Select the unzipped folder.
+4. **Run**:
+   - Right-click the project in Project Explorer.
+   - `Run As > Spring Boot App`.
+5. **Access**: Open `http://localhost:8080` in your browser.
 
-## Running the Application
-
-Once imported, right-click on the project in STS and select `Run As > Spring Boot App`.
-The application will start on `http://localhost:8080`.
-By visiting `http://localhost:8080`, you should see:
-"Hello World from Spring Boot!"
+*Note: This project does **not** require Node.js or npm. It is a 100% Java Maven project.*
