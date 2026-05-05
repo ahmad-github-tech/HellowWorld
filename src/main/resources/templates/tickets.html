@@ -31,6 +31,8 @@
                         <tr>
                             <th class="px-6 py-4">ID</th>
                             <th class="px-6 py-4">Subject</th>
+                            <th class="px-6 py-4">Type</th>
+                            <th class="px-6 py-4">Cat</th>
                             <th class="px-6 py-4">Project</th>
                             <th class="px-6 py-4">Priority</th>
                             <th class="px-6 py-4">Status</th>
@@ -40,11 +42,31 @@
                     <tbody class="text-sm border-t">
                         <tr th:each="t : ${tickets}" class="border-b last:border-0 group hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4 text-slate-400 font-mono" th:text="${'#' + t.id}"></td>
-                            <td class="px-6 py-4 font-bold" th:text="${t.title}"></td>
-                            <td class="px-6 py-4 text-slate-500" th:text="${t.projectId}"></td>
-                            <td class="px-6 py-4" th:text="${t.priority}"></td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 bg-slate-100 rounded-lg text-[10px] font-bold" th:text="${t.status}"></span>
+                                <div class="font-bold" th:text="${t.title}"></div>
+                                <div class="text-[10px] text-slate-400" th:text="${#temporals.format(t.createdAt, 'dd MMM yyyy HH:mm')}"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded" th:text="${t.ticketType}"></span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded" th:text="${t.ticketCategory}"></span>
+                            </td>
+                            <td class="px-6 py-4 text-slate-500" th:text="${t.projectId}"></td>
+                            <td class="px-6 py-4">
+                                <span th:class="${'px-2 py-1 rounded-lg text-[10px] font-bold ' + 
+                                    (t.priority == 'Critical' ? 'bg-red-50 text-red-600' : 
+                                     t.priority == 'High' ? 'bg-orange-50 text-orange-600' : 
+                                     t.priority == 'Medium' ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-500')}"
+                                      th:text="${t.priority}"></span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span th:class="${'px-2 py-1 rounded-lg text-[10px] font-bold ' + 
+                                    (t.status == 'Open' ? 'bg-indigo-100 text-indigo-700' : 
+                                     t.status == 'In Progress' ? 'bg-yellow-100 text-yellow-700' : 
+                                     t.status == 'Hold' ? 'bg-orange-100 text-orange-700' : 
+                                     t.status == 'Resolved' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500')}" 
+                                      th:text="${t.status}"></span>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">

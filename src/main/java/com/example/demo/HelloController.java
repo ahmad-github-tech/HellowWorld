@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 public class HelloController {
 
     private static List<Project> projects = new ArrayList<>(Arrays.asList(
-        new Project("p1", "Cloud Migration", "Enterprise AWS move", 24),
-        new Project("p2", "Internal HR Portal", "Staff payroll system", 48),
-        new Project("p3", "Legacy ERP Support", "SAP maintenance", 12)
+        new Project("p1", "Axis", "Axis Department", 24, "Enterprise Support"),
+        new Project("p2", "Tata Power", "Tata Power Department", 48, "Managed Services"),
+        new Project("p3", "KAUST", "KAUST Department", 12, "Cloud Operations")
     ));
 
     private static List<Ticket> tickets = new ArrayList<>(Arrays.asList(
@@ -25,6 +25,13 @@ public class HelloController {
         new Ticket("t2", "Payroll Calculation Bug", "Mismatch in bonuses", "p2", "Critical", "In Progress"),
         new Ticket("t3", "UI Glitch in Portal", "Icons not displaying", "p2", "Low", "Resolved")
     ));
+
+    static {
+        // Initialize mock fields for existing tickets
+        for (Ticket t : tickets) {
+            t.setTicketType("Incident");
+        }
+    }
 
     @GetMapping("/")
     public String dashboard(@RequestParam(required = false, defaultValue = "all") String project, Model model) {
@@ -53,7 +60,12 @@ public class HelloController {
 
     @GetMapping("/tickets/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("ticket", new Ticket("", "", "", "", "Low", "Open"));
+        Ticket newTicket = new Ticket();
+        newTicket.setPriority("Low");
+        newTicket.setStatus("Open");
+        newTicket.setTicketType("Incident");
+        newTicket.setTicketCategory("L1");
+        model.addAttribute("ticket", newTicket);
         model.addAttribute("projects", projects);
         return "ticket-form";
     }

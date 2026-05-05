@@ -74,13 +74,22 @@
                         <tr th:each="t : ${tickets}" class="border-b last:border-0 hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="font-bold text-slate-900" th:text="${t.title}"></div>
-                                <div class="text-[10px] text-slate-400" th:text="${t.description}"></div>
+                                <div class="text-[10px] text-slate-400 truncate max-w-xs" th:text="${t.description}"></div>
                             </td>
                             <td class="px-6 py-4">
-                                <span th:class="${t.priority == 'Critical' ? 'text-red-600 font-bold' : (t.priority == 'High' ? 'text-orange-600 font-bold' : 'text-slate-500')}" th:text="${t.priority}"></span>
+                                <span th:class="${'px-2 py-1 rounded-lg text-[10px] font-bold ' + 
+                                    (t.priority == 'Critical' ? 'bg-red-50 text-red-600' : 
+                                     t.priority == 'High' ? 'bg-orange-50 text-orange-600' : 
+                                     t.priority == 'Medium' ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-500')}"
+                                      th:text="${t.priority}"></span>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 bg-slate-100 rounded-lg text-[10px] font-bold" th:text="${t.status}"></span>
+                                <span th:class="${'px-2 py-1 rounded-lg text-[10px] font-bold ' + 
+                                    (t.status == 'Open' ? 'bg-indigo-100 text-indigo-700' : 
+                                     t.status == 'In Progress' ? 'bg-yellow-100 text-yellow-700' : 
+                                     t.status == 'Hold' ? 'bg-orange-100 text-orange-700' : 
+                                     t.status == 'Resolved' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500')}" 
+                                      th:text="${t.status}"></span>
                             </td>
                         </tr>
                     </tbody>
