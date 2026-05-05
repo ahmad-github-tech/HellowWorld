@@ -42,8 +42,8 @@ app.get('/', (req, res) => {
     res.send(content);
 });
 
-app.get('/ticket-list', (req, res) => {
-    let filePath = path.join(process.cwd(), 'src/main/resources/templates/ticket-list.html');
+app.get('/tickets', (req, res) => {
+    let filePath = path.join(process.cwd(), 'src/main/resources/templates/tickets.html');
     res.sendFile(filePath);
 });
 

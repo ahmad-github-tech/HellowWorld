@@ -14,7 +14,7 @@
             </div>
             <nav class="space-y-1">
                 <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Dashboard</a>
-                <a href="/ticket-list" class="flex items-center gap-3 px-4 py-3 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg">Tickets</a>
+                <a href="/tickets" class="flex items-center gap-3 px-4 py-3 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg">Tickets</a>
                 <a href="/config" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Config</a>
             </nav>
         </aside>
@@ -49,7 +49,7 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
                                     <a th:href="@{'/tickets/edit/' + ${t.id}}" class="text-indigo-600 hover:underline font-bold">Edit</a>
-                                    <a href="#" th:onclick="'if(confirm(\'Expunge this record permanently?\')) window.location.href=\'/tickets/delete/' + ${t.id} + '\''" class="text-red-600 hover:underline font-bold">Delete</a>
+                                    <a href="#" th:onclick="|if(confirm('Expunge this record permanently?')) window.location.href='/tickets/delete/${t.id}'|" class="text-red-600 hover:underline font-bold">Delete</a>
                                 </div>
                             </td>
                         </tr>

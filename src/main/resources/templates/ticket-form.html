@@ -8,7 +8,7 @@
 <body class="bg-indigo-600 flex items-center justify-center min-h-screen p-6">
     <div class="bg-white max-w-xl w-full rounded-[2rem] overflow-hidden shadow-2xl">
         <div class="p-10 border-b">
-            <a href="/ticket-list" class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 hover:text-indigo-600 block transition-colors">← Back to Records</a>
+            <a href="/tickets" class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 hover:text-indigo-600 block transition-colors">← Back to Records</a>
             <h2 class="text-3xl font-bold" th:text="${ticket.id == null or ticket.id == '' ? 'Log New Request' : 'Modify Record #' + ticket.id}"></h2>
             <p class="text-sm text-slate-400 mt-2">Initiate a synchronization between the user and support node.</p>
         </div>

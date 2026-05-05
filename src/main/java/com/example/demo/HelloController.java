@@ -44,11 +44,11 @@ public class HelloController {
         return "dashboard";
     }
 
-    @GetMapping("/ticket-list")
+    @GetMapping("/tickets")
     public String ticketList(Model model) {
         model.addAttribute("tickets", tickets);
         model.addAttribute("projects", projects);
-        return "ticket-list";
+        return "tickets";
     }
 
     @GetMapping("/tickets/new")
@@ -71,7 +71,7 @@ public class HelloController {
                 }
             }
         }
-        return "redirect:/ticket-list";
+        return "redirect:/tickets";
     }
 
     @GetMapping("/tickets/edit/{id}")
@@ -85,7 +85,7 @@ public class HelloController {
     @GetMapping("/tickets/delete/{id}")
     public String deleteTicket(@PathVariable String id) {
         tickets.removeIf(t -> t.getId().equals(id));
-        return "redirect:/ticket-list";
+        return "redirect:/tickets";
     }
 
     @GetMapping("/config")
