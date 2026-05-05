@@ -27,4 +27,15 @@ This is a pure Java web application designed to run entirely within **Spring Too
    - `Run As > Spring Boot App`.
 5. **Access**: Open `http://localhost:8080` in your browser.
 
-*Note: This project does **not** require Node.js or npm. It is a 100% Java Maven project.*
+---
+
+### Note on AI Studio Preview
+The `server.ts` and `package.json` files are included **only** to support the live preview window in AI Studio. 
+
+**When using STS, you can safely ignore or delete:**
+- `server.ts`
+- `package.json`
+- `package-lock.json`
+- `node_modules/` (if present)
+
+Your primary application is the Spring Boot project in `src/`.
