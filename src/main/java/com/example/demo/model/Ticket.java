@@ -1,10 +1,15 @@
 package com.example.demo.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@Entity
+@Table(name = "tickets")
 public class Ticket {
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String description;
     private String projectId;
@@ -28,7 +33,7 @@ public class Ticket {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Ticket(String id, String title, String description, String projectId, String priority, String status) {
+    public Ticket(Long id, String title, String description, String projectId, String priority, String status) {
         this();
         this.id = id;
         this.title = title;
@@ -39,8 +44,8 @@ public class Ticket {
     }
 
     // Getters and Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
