@@ -1,151 +1,201 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>IT Support - New Ticket</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DGSL | IT Ticket Manifest</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <a href="/tickets" class="text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-indigo-600 transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    Back to Tickets
-                </a>
-                <h1 class="text-3xl font-bold text-slate-900 mt-2" th:text="${ticket.id == null ? 'Create New IT Ticket' : 'Update Ticket #' + ticket.id}"></h1>
-            </div>
+<body class="bg-slate-50 text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+    <!-- Mobile Header -->
+    <header class="lg:hidden bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-200">D</div>
+            <span class="font-extrabold tracking-tight text-slate-800">DGSL</span>
         </div>
+        <button id="mobile-menu-toggle" class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+    </header>
 
-        <form th:action="@{/tickets/save}" method="post" th:object="${ticket}" class="grid grid-cols-1 lg:grid-cols-3 gap-8" onsubmit="return confirm('Do you want to save this ticket record?')">
-            <input type="hidden" th:field="*{id}">
+    <div class="flex min-h-screen relative">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col pt-12 pb-8 px-6 overflow-y-auto shadow-2xl shadow-slate-200/50 lg:shadow-none lg:sticky lg:h-screen lg:top-0">
+            <button id="close-sidebar" class="lg:hidden absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
 
-            <!-- Main Info (Left Col) -->
-            <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2 border-b pb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-600"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
-                        Ticket Details
-                    </h2>
-
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Ticket ID</label>
-                                <input th:value="${ticket.id == null ? 'TICKET-(Auto)' : '#' + ticket.id}" disabled class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 font-mono outline-none">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Status</label>
-                                <select th:field="*{status}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none cursor-pointer focus:ring-2 ring-indigo-500">
-                                    <option value="Open">Open</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Hold">Hold</option>
-                                    <option value="Resolved">Resolved</option>
-                                    <option value="Closed">Closed</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Short Summary / Title</label>
-                            <input th:field="*{title}" placeholder="e.g., VPN connection failure on remote workstations" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-2 ring-indigo-500 outline-none transition-all">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Detailed Description</label>
-                            <textarea th:field="*{description}" placeholder="Provide as much detail as possible..." required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm h-40 resize-none outline-none focus:bg-white focus:ring-2 ring-indigo-500 transition-all"></textarea>
-                        </div>
-                    </div>
+            <div class="hidden lg:flex items-center gap-4 px-4 mb-16">
+                <div class="bg-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-xl shadow-indigo-200">D</div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight leading-none mb-1">DGSL</h1>
+                    <p class="text-[9px] text-slate-400 uppercase font-black tracking-[0.2em] opacity-80">Operational Hub</p>
                 </div>
             </div>
 
-            <!-- Meta Data (Right Col) -->
-            <div class="space-y-6">
-                <!-- Status/Meta -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-sm font-bold text-slate-900 mb-6 uppercase tracking-widest border-b pb-4">Classification</h2>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Project / Department</label>
-                            <select th:field="*{projectId}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none cursor-pointer focus:ring-2 ring-indigo-500">
-                                <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
-                            </select>
-                        </div>
+            <div class="mb-10 px-4">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 opacity-60">System Core</p>
+                <nav class="flex flex-col gap-2">
+                    <a href="/" th:class="${page == 'dashboard' ? 'flex items-center px-4 py-3.5 text-sm font-bold text-indigo-600 bg-indigo-50/70 border-r-2 border-indigo-600 rounded-xl transition-all' : 'flex items-center px-4 py-3.5 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-xl transition-all hover:text-slate-900 group'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/tickets" th:class="${page == 'tickets' ? 'flex items-center px-4 py-3.5 text-sm font-bold text-indigo-600 bg-indigo-50/70 border-r-2 border-indigo-600 rounded-xl transition-all' : 'flex items-center px-4 py-3.5 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-xl transition-all hover:text-slate-900 group'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                        Ticket Vault
+                    </a>
+                    <a href="/config" th:class="${page == 'config' ? 'flex items-center px-4 py-3.5 text-sm font-bold text-indigo-600 bg-indigo-50/70 border-r-2 border-indigo-600 rounded-xl transition-all' : 'flex items-center px-4 py-3.5 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-xl transition-all hover:text-slate-900 group'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Configuration
+                    </a>
+                </nav>
+            </div>
+        </aside>
 
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Ticket Type</label>
-                            <select th:field="*{ticketType}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none cursor-pointer focus:ring-2 ring-indigo-500">
-                                <option value="Incident">Incident</option>
-                                <option value="Service Request">Service Request</option>
-                                <option value="Problem">Problem</option>
-                                <option value="Change Request">Change Request</option>
-                            </select>
-                        </div>
+        <!-- Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden lg:hidden"></div>
 
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Ticket Category</label>
-                            <select th:field="*{ticketCategory}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none cursor-pointer focus:ring-2 ring-indigo-500">
-                                <option value="L1">Level 1 (Basic)</option>
-                                <option value="L2">Level 2 (Advanced)</option>
-                                <option value="L3">Level 3 (Specialist)</option>
-                                <option value="L4">Level 4 (Architect/Vendor)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Priority Level</label>
-                            <select th:field="*{priority}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none cursor-pointer focus:ring-2 ring-indigo-500">
-                                <option value="Low">Low (P4)</option>
-                                <option value="Medium">Medium (P3)</option>
-                                <option value="High">High (P2)</option>
-                                <option value="Critical">Critical (P1)</option>
-                            </select>
-                        </div>
-                    </div>
+        <!-- Main -->
+        <main class="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-8 lg:p-12 overflow-x-hidden">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div class="space-y-1">
+                    <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight" th:text="${ticket.id == null ? 'New Entry' : 'Modify Record'}">Ticket</h2>
+                    <p class="text-slate-500 text-sm md:text-base font-medium">Record incident details and system classifications.</p>
                 </div>
-
-                <!-- Timestamps -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-sm font-bold text-slate-900 mb-6 uppercase tracking-widest border-b pb-4">Timeline</h2>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Creation Date</label>
-                            <input type="datetime-local" th:field="*{createdAt}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Expected Response</label>
-                            <input type="datetime-local" th:field="*{responseDateTime}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 mb-1 block">Target Resolution</label>
-                            <input type="datetime-local" th:field="*{resolutionDateTime}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 ring-indigo-500">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-sm font-bold text-slate-900 mb-6 uppercase tracking-widest border-b pb-4">Internal Notes</h2>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500 mb-1 block">Remarks</label>
-                        <textarea th:field="*{remarks}" placeholder="Enter any specific remarks here..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm h-24 resize-none outline-none focus:bg-white focus:ring-2 ring-indigo-500 transition-all"></textarea>
-                    </div>
-                </div>
-
-                <div class="pt-4">
-                    <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:-translate-y-1 transition-all active:translate-y-0">
-                        Save Ticket Record
-                    </button>
-                    <p class="text-[10px] text-center text-slate-400 mt-4 uppercase tracking-widest font-medium">System will audit this entry</p>
+                <div>
+                     <a href="/tickets" class="flex items-center gap-2 p-3 bg-white border border-slate-200 text-[10px] font-black uppercase text-slate-400 hover:text-slate-900 hover:border-slate-900 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        Exit to Vault
+                    </a>
                 </div>
             </div>
-        </form>
+
+            <form th:action="@{/tickets/save}" method="post" th:object="${ticket}" class="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-6xl">
+                <input type="hidden" th:field="*{id}">
+
+                <!-- Left Column: Core Data -->
+                <div class="lg:col-span-8 space-y-12">
+                    <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden p-8 md:p-12">
+                        <div class="space-y-8">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Identifier</label>
+                                    <div class="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black text-slate-400 mono select-none" th:text="${ticket.id == null ? 'AUTO_GENERATED' : '#' + ticket.id}"></div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Operational Status</label>
+                                    <div class="relative">
+                                        <select th:field="*{status}" class="w-full appearance-none bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-4 text-sm font-black text-indigo-600 focus:ring-4 ring-indigo-500/10 outline-none cursor-pointer transition-all">
+                                            <option value="Open">Open</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Hold">Hold</option>
+                                            <option value="Resolved">Resolved</option>
+                                            <option value="Closed">Closed</option>
+                                        </select>
+                                        <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-indigo-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Incident Headline</label>
+                                <input type="text" th:field="*{title}" placeholder="CONCISE SUMMARY OF INCIDENT" required class="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none uppercase placeholder:text-slate-200 transition-all">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Detailed Narrative</label>
+                                <textarea th:field="*{description}" placeholder="FULL SYSTEM TRACES OR USER FEEDBACK..." required class="w-full h-64 bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-sm font-medium text-slate-700 focus:bg-white focus:ring-4 ring-indigo-500/10 outline-none transition-all placeholder:text-slate-200 resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Taxonomy -->
+                <div class="lg:col-span-4 space-y-8">
+                    <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm p-8 md:p-10 space-y-10">
+                        <div class="space-y-8">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Infrastructure Domain</label>
+                                <div class="relative">
+                                    <select th:field="*{projectId}" class="w-full appearance-none bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none cursor-pointer overflow-hidden transition-all">
+                                        <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}"></option>
+                                    </select>
+                                    <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Classification</label>
+                                <div class="relative">
+                                    <select th:field="*{ticketType}" class="w-full appearance-none bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none cursor-pointer transition-all">
+                                        <option value="Incident">Incident</option>
+                                        <option value="Service Request">Service Request</option>
+                                        <option value="Problem">Problem</option>
+                                        <option value="Change Request">Change Request</option>
+                                    </select>
+                                    <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Criticality</label>
+                                <div class="relative">
+                                    <select th:field="*{priority}" class="w-full appearance-none bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none cursor-pointer transition-all">
+                                        <option value="Low">Low Utility (P4)</option>
+                                        <option value="Medium">Nominal (P3)</option>
+                                        <option value="High">Elevated (P2)</option>
+                                        <option value="Critical">System Threat (P1)</option>
+                                    </select>
+                                    <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 border-t border-slate-100 space-y-6">
+                            <button type="submit" class="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.2em] shadow-2xl shadow-slate-900/10 hover:bg-slate-800 hover:-translate-y-1 transition-all active:scale-[0.98]">
+                                Record Manifest
+                            </button>
+                            <p class="text-[9px] text-center text-slate-300 font-black uppercase tracking-[0.2em]">Transaction Audited internally</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
     </div>
+
+    <script>
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        mobileMenuToggle.addEventListener('click', toggleSidebar);
+        closeSidebar.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+    </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 {
-  "name": "Nexus IT Support System",
+  "name": "DGSL IT Support System",
   "description": "Multi-project IT support platform with smart dashboards, SLA tracking, and configuration modules.",
   "requestFramePermissions": [],
   "majorCapabilities": ["Dashboarding", "Ticket Management", "Project Onboarding"]

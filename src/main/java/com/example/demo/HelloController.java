@@ -21,6 +21,9 @@ public class HelloController {
     @Autowired
     private TicketRepository ticketRepository;
 
+    @Autowired
+    private com.example.demo.repository.PersonnelRepository personnelRepository;
+
     @GetMapping("/")
     public String dashboard(@RequestParam(required = false, defaultValue = "all") String project, Model model) {
         List<Ticket> filteredTickets;
@@ -38,7 +41,8 @@ public class HelloController {
 
         model.addAttribute("tickets", filteredTickets);
         model.addAttribute("projects", projects);
-        model.addAttribute("selectedProject", project); // Ensure this matches what template expects
+        model.addAttribute("selectedProject", project);
+        model.addAttribute("page", "dashboard");
         
         // Simple Stats
         long open = filteredTickets.stream().filter(t -> !"Resolved".equals(t.getStatus())).count();
@@ -52,6 +56,7 @@ public class HelloController {
     public String ticketList(Model model) {
         model.addAttribute("tickets", ticketRepository.findAll());
         model.addAttribute("projects", projectRepository.findAll());
+        model.addAttribute("page", "tickets");
         return "tickets";
     }
 
@@ -100,18 +105,63 @@ public class HelloController {
                 .orElse(null);
         }
         
-        if (selected == null && !projects.isEmpty()) {
-            selected = projects.get(0);
+        if (selected == null || selected.getId() == null) {
+            if (selected == null) selected = new Project();
+            selected.setBusinessHours("24/7");
+            selected.setTimezone("UTC");
+            selected.setP1Response(2); selected.setP1Resolution(4);
+            selected.setP2Response(4); selected.setP2Resolution(8);
+            selected.setP3Response(8); selected.setP3Resolution(24);
+            selected.setP4Response(24); selected.setP4Resolution(48);
         }
         
         model.addAttribute("projects", projects);
+        if (projectId != null) {
+            model.addAttribute("personnelList", personnelRepository.findByProjects_Id(projectId));
+        } else {
+            model.addAttribute("personnelList", personnelRepository.findAll());
+        }
         model.addAttribute("selectedProject", selected);
+        model.addAttribute("newPersonnel", new com.example.demo.model.Personnel());
+        model.addAttribute("view", "form");
+        model.addAttribute("page", "config");
+        return "config";
+    }
+
+    @GetMapping("/config-details")
+    public String configDetails(Model model) {
+        model.addAttribute("projects", projectRepository.findAll());
+        model.addAttribute("personnelList", personnelRepository.findAll());
+        model.addAttribute("view", "details");
+        model.addAttribute("page", "details");
         return "config";
     }
 
     @PostMapping("/projects/save")
     public String saveProject(@ModelAttribute Project project) {
-        projectRepository.save(project);
+        Project saved = projectRepository.save(project);
+        return "redirect:/config?projectId=" + saved.getId();
+    }
+
+    @GetMapping("/projects/delete/{id}")
+    public String deleteProject(@PathVariable Long id) {
+        projectRepository.deleteById(id);
+        return "redirect:/config";
+    }
+
+    @PostMapping("/personnel/save")
+    public String savePersonnel(@ModelAttribute com.example.demo.model.Personnel personnel, 
+                                @RequestParam(required = false) List<Long> projectIds,
+                                @RequestParam(required = false) Long currentProjectId) {
+        if (projectIds != null) {
+            List<Project> projects = projectRepository.findAllById(projectIds);
+            personnel.getProjects().clear();
+            personnel.getProjects().addAll(projects);
+        }
+        personnelRepository.save(personnel);
+        if (currentProjectId != null) {
+            return "redirect:/config?projectId=" + currentProjectId;
+        }
         return "redirect:/config";
     }
 }

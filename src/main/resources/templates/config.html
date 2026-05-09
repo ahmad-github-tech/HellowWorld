@@ -1,177 +1,372 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Nexus IT Support - Configuration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DGSL | System Configuration</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .tab-active { border-color: #4f46e5; color: #4f46e5; background-color: #f5f3ff; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen">
-    <div class="flex">
+<body class="bg-slate-50 text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+    <!-- Mobile Header -->
+    <header class="lg:hidden bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-200">D</div>
+            <span class="font-extrabold tracking-tight text-slate-800">DGSL</span>
+        </div>
+        <button id="mobile-menu-toggle" class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+    </header>
+
+    <div class="flex min-h-screen relative">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-slate-200 min-h-screen p-6 flex flex-col fixed h-full">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-xl">N</div>
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col pt-12 pb-8 px-6 overflow-y-auto shadow-2xl shadow-slate-200/50 lg:shadow-none lg:sticky lg:h-screen lg:top-0">
+            <button id="close-sidebar" class="lg:hidden absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+
+            <div class="hidden lg:flex items-center gap-4 px-4 mb-16">
+                <div class="bg-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-xl shadow-indigo-200">D</div>
                 <div>
-                    <h1 class="text-lg font-bold">Nexus</h1>
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">IT Support</p>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight leading-none mb-1">DGSL</h1>
+                    <p class="text-[9px] text-slate-400 uppercase font-black tracking-[0.2em] opacity-80">Operational Hub</p>
                 </div>
             </div>
-            <nav class="space-y-1">
-                <a href="/" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Dashboard</a>
-                <a href="/tickets" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">Tickets</a>
-                <a href="/config" class="flex items-center gap-3 px-4 py-3 text-sm font-medium bg-indigo-50 text-indigo-700 rounded-lg">Config</a>
-            </nav>
+
+            <div class="mb-10 px-4">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 opacity-60">System Core</p>
+                <nav class="flex flex-col gap-2">
+                    <a href="/" th:class="${page == 'dashboard' ? 'flex items-center px-4 py-3.5 text-sm font-bold text-indigo-600 bg-indigo-50/70 border-r-2 border-indigo-600 rounded-xl transition-all' : 'flex items-center px-4 py-3.5 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-xl transition-all hover:text-slate-900 group'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="/tickets" th:class="${page == 'tickets' ? 'flex items-center px-4 py-3.5 text-sm font-bold text-indigo-600 bg-indigo-50/70 border-r-2 border-indigo-600 rounded-xl transition-all' : 'flex items-center px-4 py-3.5 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-xl transition-all hover:text-slate-900 group'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                        Ticket Vault
+                    </a>
+                    <a href="/config" th:class="${page == 'config' ? 'flex items-center px-4 py-3.5 text-sm font-bold text-indigo-600 bg-indigo-50/70 border-r-2 border-indigo-600 rounded-xl transition-all' : 'flex items-center px-4 py-3.5 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-xl transition-all hover:text-slate-900 group'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Configuration
+                    </a>
+                </nav>
+            </div>
         </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 ml-64 p-10">
-            <header class="mb-10 flex items-center justify-between">
-                <div>
-                    <h2 class="text-3xl font-bold text-slate-900">System Configuration</h2>
-                    <p class="text-slate-500 mt-2">Manage settings, users, and service level agreements.</p>
+        <!-- Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+        <!-- Main -->
+        <main class="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-8 lg:p-12 overflow-y-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div class="space-y-1">
+                    <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">System Architect</h2>
+                    <p class="text-slate-500 text-sm md:text-base font-medium">Configure infrastructure domains and resource mappings.</p>
                 </div>
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
-                    <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Context:</label>
-                    <select id="projectSelector" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-indigo-700 focus:ring-2 ring-indigo-500 outline-none cursor-pointer">
-                        <option th:each="p : ${projects}" 
-                                th:value="${p.id}" 
-                                th:text="${p.name + ' (' + p.projectType + ')'}"
-                                th:selected="${selectedProject != null and p.id == selectedProject.id}">
-                            Axis (Support)
-                        </option>
-                    </select>
+            </div>
+
+            <!-- Header: Governance Control Panel -->
+            <header th:if="${view == 'form'}" class="mb-12 bg-white border border-slate-200 p-8 rounded-[2.5rem] shadow-sm">
+                <div class="flex flex-col lg:flex-row gap-8 items-end">
+                    <div class="space-y-3 w-full lg:w-1/3">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Active Governance Domain</label>
+                        <div class="relative">
+                            <select id="projectSelector" class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-black text-indigo-600 focus:ring-4 ring-indigo-500/10 outline-none cursor-pointer transition-all hover:border-indigo-200">
+                                <option value="" th:selected="${selectedProject == null or selectedProject.id == null}">+ CREATE NEW SESSION</option>
+                                <option th:each="p : ${projects}" 
+                                        th:value="${p.id}" 
+                                        th:text="${p.name}"
+                                        th:selected="${selectedProject != null and p.id == selectedProject.id}">
+                                </option>
+                            </select>
+                            <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 flex-1 w-full">
+                        <form action="/projects/save" method="post" th:object="${selectedProject}" id="projectForm" class="flex flex-col sm:flex-row items-end gap-4 w-full">
+                            <input type="hidden" th:field="*{id}">
+                            <div class="flex-1 w-full">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-3 ml-1">Provision Project</label>
+                                <input type="text" th:field="*{name}" placeholder="IDENTIFIER (E.G. HR-PORTAL)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none uppercase placeholder:text-slate-300 transition-all">
+                            </div>
+                            <div class="flex gap-3 w-full sm:w-auto">
+                                <button type="submit" class="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-slate-900/10 hover:bg-slate-800 hover:-translate-y-0.5 transition-all active:scale-95 whitespace-nowrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                                    Execute
+                                </button>
+                                <a th:if="${selectedProject.id != null}" th:href="@{'/projects/delete/' + ${selectedProject.id}}" class="w-14 height-14 flex items-center justify-center bg-red-50 border border-red-100 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm shadow-red-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </header>
 
-            <div class="grid grid-cols-1 gap-10" th:if="${selectedProject != null}">
-                <!-- Segment 1: Project Onboarding -->
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 bg-indigo-50/50 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-indigo-600 rounded-lg text-white shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <!-- VIEW: CONFIG FORM -->
+            <div th:if="${view == 'form'}" class="space-y-12">
+                <!-- SLA Configuration Section -->
+                <section th:if="${selectedProject.id != null}" class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden relative">
+                    <form action="/projects/save" method="post" th:object="${selectedProject}" class="p-8 md:p-12">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{name}">
+                        <input type="hidden" th:field="*{projectType}">
+                        <input type="hidden" th:field="*{businessHours}">
+                        <input type="hidden" th:field="*{timezone}">
+
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8">
+                            <div class="space-y-1">
+                                <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">SLA Benchmarks</h3>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-80" th:text="${'Operational goals for ' + selectedProject.name}"></p>
                             </div>
-                            <h3 class="text-lg font-bold text-slate-900">1. Project Onboarding</h3>
+                            <button type="submit" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl shadow-indigo-500/20 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all">
+                                Update Benchmarks
+                            </button>
                         </div>
-                        <div class="flex gap-2">
-                           <button class="bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition-all">Audit Logs</button>
-                           <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition-all">Edit Current</button>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Display Name</label>
-                                    <p class="text-lg font-bold text-slate-900" th:text="${selectedProject.name}">Axis</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                            <!-- P1 -->
+                            <div class="bg-slate-50 border border-slate-100 p-8 rounded-3xl relative overflow-hidden group hover:bg-white hover:border-indigo-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
+                                    <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-wider">Priority 1</h4>
                                 </div>
-                                <div>
-                                    <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Description</label>
-                                    <p class="text-sm text-slate-600" th:text="${selectedProject.description}">Primary cloud infrastructure and network management unit for enterprise clients.</p>
-                                </div>
-                                <div>
-                                    <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Project Type</label>
-                                    <p class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md inline-block" th:text="${selectedProject.projectType}">Enterprise Support Node</p>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                    <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Status</label>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                                        <span class="text-sm font-bold text-slate-900">Active</span>
+                                <div class="space-y-6">
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Response</label>
+                                        <input type="number" th:field="*{p1Response}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Resolution</label>
+                                        <input type="number" th:field="*{p1Resolution}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
                                     </div>
                                 </div>
-                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                    <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Admin Node</label>
-                                    <span class="text-sm font-bold text-slate-900">US-EAST-1</span>
+                            </div>
+                            <!-- P2 -->
+                            <div class="bg-slate-50 border border-slate-100 p-8 rounded-3xl relative overflow-hidden group hover:bg-white hover:border-indigo-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
+                                    <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-wider">Priority 2</h4>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Response</label>
+                                        <input type="number" th:field="*{p2Response}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Resolution</label>
+                                        <input type="number" th:field="*{p2Resolution}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- P3 -->
+                            <div class="bg-slate-50 border border-slate-100 p-8 rounded-3xl relative overflow-hidden group hover:bg-white hover:border-indigo-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                                    <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-wider">Priority 3</h4>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Response</label>
+                                        <input type="number" th:field="*{p3Response}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Resolution</label>
+                                        <input type="number" th:field="*{p3Resolution}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- P4 -->
+                            <div class="bg-slate-50 border border-slate-100 p-8 rounded-3xl relative overflow-hidden group hover:bg-white hover:border-indigo-100 hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                                    <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-wider">Priority 4</h4>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Response</label>
+                                        <input type="number" th:field="*{p4Response}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Resolution</label>
+                                        <input type="number" th:field="*{p4Resolution}" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-black text-slate-900 outline-none focus:ring-4 ring-indigo-500/10 transition-all">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </section>
 
-                <!-- Segment 2: User Mapping -->
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 bg-emerald-50/50 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-emerald-600 rounded-lg text-white shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <!-- Personnel Mapping Section -->
+                <section class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[500px]">
+                    <div class="p-8 md:p-12">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-8">
+                            <div class="space-y-1">
+                                <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Personnel Matrix</h3>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-80">Associate human resources with infrastructure domains</p>
                             </div>
-                            <h3 class="text-lg font-bold text-slate-900">2. User Mapping</h3>
                         </div>
-                        <button class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-emerald-700 transition-all">+ Assign Staff</button>
-                    </div>
-                    <div class="p-8 space-y-6">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest" th:text="${'Assigned Personnel for ' + selectedProject.name}">Assigned Personnel for "Axis"</h4>
-                            <span class="text-xs text-slate-400">Total: 4 members</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div class="p-4 border border-slate-100 rounded-xl flex items-center gap-4 bg-slate-50/50">
-                                <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">AJ</div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-900">Ahmad Jamal</p>
-                                    <p class="text-[10px] text-indigo-600 font-bold uppercase">Lead Engineer</p>
+
+                        <form action="/personnel/save" method="post" th:object="${newPersonnel}" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                            <input type="hidden" name="currentProjectId" th:value="${selectedProject.id}">
+                            <!-- Input Column -->
+                            <div class="lg:col-span-5 space-y-8">
+                                <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 space-y-8">
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Full Identity</label>
+                                        <input type="text" th:field="*{name}" placeholder="ASSOCIATE NAME" class="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none transition-all placeholder:text-slate-200">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Functional Specialty</label>
+                                        <input type="text" th:field="*{role}" placeholder="PRINCIPAL SRE, LEAD DEV, ETC" class="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:ring-4 ring-indigo-500/10 outline-none transition-all placeholder:text-slate-200">
+                                    </div>
+                                    <button type="submit" class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-[0.98]">
+                                        Execute Assignment
+                                    </button>
+                                </div>
+
+                                <!-- Current Personnel List Display -->
+                                <div th:if="${not #lists.isEmpty(personnelList)}" class="space-y-6">
+                                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Current Assignments</h4>
+                                    <div class="space-y-3">
+                                        <div th:each="pers : ${personnelList}" class="flex items-center justify-between p-5 bg-slate-50 border border-slate-100 rounded-2xl">
+                                            <div>
+                                                <div class="text-[11px] font-black text-slate-900 uppercase tracking-wider" th:text="${pers.name}"></div>
+                                                <div class="text-[9px] font-bold text-slate-400 uppercase" th:text="${pers.role}"></div>
+                                            </div>
+                                            <div class="flex gap-2">
+                                                <span class="px-2 py-1 bg-indigo-50 text-indigo-600 text-[8px] font-black rounded uppercase" th:text="${pers.projects.size() + ' DOMAINS'}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </section>
 
-                <!-- Segment 3: SLA and Priority Mapping -->
-                <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 bg-orange-50/50 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-orange-600 rounded-lg text-white shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <!-- Selection Column -->
+                            <div class="lg:col-span-7">
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Domain Allocation</h4>
+                                        <span class="text-[9px] font-black text-indigo-400 uppercase">Select Target Nodes</span>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2">
+                                        <div th:each="p : ${projects}" class="relative group">
+                                            <label class="flex items-center gap-4 p-5 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:bg-white hover:border-indigo-100 hover:shadow-lg hover:shadow-slate-200/40 transition-all">
+                                                <div class="relative flex items-center justify-center">
+                                                    <input type="checkbox" name="projectIds" th:value="${p.id}" 
+                                                           th:checked="${selectedProject != null and p.id == selectedProject.id}"
+                                                           class="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-200 bg-white checked:bg-indigo-600 checked:border-indigo-600 transition-all cursor-pointer">
+                                                    <svg class="absolute w-4 h-4 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                                </div>
+                                                <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest group-hover:text-slate-900 transition-colors" th:text="${p.name}"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-lg font-bold text-slate-900">3. SLA & Priority Mapping</h3>
-                        </div>
-                        <button class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-orange-700 transition-all">Configure Matrix</button>
-                    </div>
-                    <div class="p-8">
-                         <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="bg-slate-50 text-[10px] uppercase font-bold text-slate-400">
-                                    <tr>
-                                        <th class="px-6 py-4">Priority Level</th>
-                                        <th class="px-6 py-4">Response SLA (Expected)</th>
-                                        <th class="px-6 py-4">Resolution SLA (Target)</th>
-                                        <th class="px-6 py-4">Impact Scope</th>
-                                        <th class="px-6 py-4">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-sm divide-y divide-slate-50">
-                                    <tr class="hover:bg-slate-50 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full font-bold text-[10px] uppercase">P1 - Critical</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-slate-900" th:text="${(selectedProject.slaHours / 4.0) + ' Hours'}">15 Minutes</div>
-                                            <div class="text-[10px] text-slate-400" th:text="${'Acknowledge based on ' + selectedProject.name + ' SLA'}">Acknowledge within 0.25h</div>
-                                        </td>
-                                        <td class="px-6 py-4 text-slate-900 font-bold" th:text="${(selectedProject.slaHours / 2.0) + ' Hours'}">2 Hours</td>
-                                        <td class="px-6 py-4 text-slate-500">Business Stopped / Site Down</td>
-                                        <td class="px-6 py-4"><button class="text-indigo-600 font-bold hover:underline">Edit</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                         </div>
+                        </form>
                     </div>
                 </section>
             </div>
         </main>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md hidden">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl shadow-slate-900/50">
+            <div class="w-20 h-20 bg-indigo-50 border border-indigo-100 rounded-3xl flex items-center justify-center text-indigo-600 mb-8 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 text-center uppercase tracking-tight mb-4">Verification Required</h3>
+            <p id="confirmMessage" class="text-[11px] font-black text-slate-400 text-center uppercase tracking-[0.15em] leading-relaxed mb-12 px-6">Administrator session requires confirmation for this operation.</p>
+            <div class="flex gap-4">
+                <button id="cancelBtn" class="flex-1 py-5 bg-slate-100 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">Abort</button>
+                <button id="confirmBtn" class="flex-1 py-5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-slate-900/20 hover:bg-slate-800 transition-all">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        mobileMenuToggle.addEventListener('click', toggleSidebar);
+        closeSidebar.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
         document.getElementById('projectSelector').addEventListener('change', function() {
             const projectId = this.value;
-            window.location.href = '/config?projectId=' + projectId;
+            window.location.href = projectId ? '/config?projectId=' + projectId : '/config';
+        });
+
+        // Confirmation Modal Logic
+        let pendingAction = null;
+
+        function showConfirm(message, action) {
+            const modal = document.getElementById('confirmModal');
+            const messageEl = document.getElementById('confirmMessage');
+            messageEl.innerText = message;
+            modal.classList.remove('hidden');
+            pendingAction = action;
+        }
+
+        function hideConfirm() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            pendingAction = null;
+        }
+
+        document.getElementById('cancelBtn').addEventListener('click', hideConfirm);
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            if (pendingAction) pendingAction();
+            hideConfirm();
+        });
+
+        // Intercept forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!form.hasAttribute('data-confirmed')) {
+                    e.preventDefault();
+                    let msg = "Authorize this system delta?";
+                    if (form.id === 'projectForm') msg = "Initiate project provisioning?";
+                    else if (form.action.includes('personnel')) msg = "Verify personnel allocation?";
+                    else msg = "Confirm SLA benchmark synchronization?";
+
+                    showConfirm(msg, () => {
+                        form.setAttribute('data-confirmed', 'true');
+                        form.submit();
+                    });
+                }
+            });
+        });
+
+        // Intercept delete links
+        document.querySelectorAll('a[href*="delete"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showConfirm("Are you sure you want to delete this infrastructure node? This operation is irreversible.", () => {
+                    window.location.href = link.href;
+                });
+            });
         });
     </script>
 </body>
