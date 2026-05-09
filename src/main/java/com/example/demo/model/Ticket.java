@@ -12,7 +12,7 @@ public class Ticket {
     private Long id;
     private String title;
     private String description;
-    private String projectId;
+    private Long projectId;
     private String priority; // Low, Medium, High, Critical
     private String status; // Open, In Progress, Resolved, Closed, Hold
     private String ticketType; // Incident, Service Request, Problem, Change
@@ -33,7 +33,7 @@ public class Ticket {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Ticket(Long id, String title, String description, String projectId, String priority, String status) {
+    public Ticket(Long id, String title, String description, Long projectId, String priority, String status) {
         this();
         this.id = id;
         this.title = title;
@@ -50,8 +50,8 @@ public class Ticket {
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-    public String getProjectId() { return projectId; }
-    public void setProjectId(String projectId) { this.projectId = projectId; }
+    public Long getProjectId() { return projectId; }
+    public void setProjectId(Long projectId) { this.projectId = projectId; }
     public String getPriority() { return priority; }
     public void setPriority(String priority) { this.priority = priority; }
     public String getStatus() { return status; }

@@ -36,15 +36,18 @@
                 </div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
                     <label class="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Context:</label>
-                    <select class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-indigo-700 focus:ring-2 ring-indigo-500 outline-none cursor-pointer">
-                        <option value="p1">Axis (Project Alpha)</option>
-                        <option value="p2">Tata Power (Department X)</option>
-                        <option value="p3">KAUST (Research Hub)</option>
+                    <select id="projectSelector" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-indigo-700 focus:ring-2 ring-indigo-500 outline-none cursor-pointer">
+                        <option th:each="p : ${projects}" 
+                                th:value="${p.id}" 
+                                th:text="${p.name + ' (' + p.projectType + ')'}"
+                                th:selected="${selectedProject != null and p.id == selectedProject.id}">
+                            Axis (Support)
+                        </option>
                     </select>
                 </div>
             </header>
 
-            <div class="grid grid-cols-1 gap-10">
+            <div class="grid grid-cols-1 gap-10" th:if="${selectedProject != null}">
                 <!-- Segment 1: Project Onboarding -->
                 <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-6 border-b border-slate-100 bg-indigo-50/50 flex items-center justify-between">
@@ -64,15 +67,15 @@
                             <div class="space-y-4">
                                 <div>
                                     <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Display Name</label>
-                                    <p class="text-lg font-bold text-slate-900">Axis</p>
+                                    <p class="text-lg font-bold text-slate-900" th:text="${selectedProject.name}">Axis</p>
                                 </div>
                                 <div>
                                     <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Description</label>
-                                    <p class="text-sm text-slate-600">Primary cloud infrastructure and network management unit for enterprise clients.</p>
+                                    <p class="text-sm text-slate-600" th:text="${selectedProject.description}">Primary cloud infrastructure and network management unit for enterprise clients.</p>
                                 </div>
                                 <div>
                                     <label class="text-[10px] uppercase font-bold text-slate-400 tracking-widest block mb-1">Project Type</label>
-                                    <p class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md inline-block">Enterprise Support Node</p>
+                                    <p class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md inline-block" th:text="${selectedProject.projectType}">Enterprise Support Node</p>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
@@ -105,7 +108,7 @@
                     </div>
                     <div class="p-8 space-y-6">
                         <div class="flex items-center justify-between">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Assigned Personnel for "Axis"</h4>
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest" th:text="${'Assigned Personnel for ' + selectedProject.name}">Assigned Personnel for "Axis"</h4>
                             <span class="text-xs text-slate-400">Total: 4 members</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -114,20 +117,6 @@
                                 <div>
                                     <p class="text-sm font-bold text-slate-900">Ahmad Jamal</p>
                                     <p class="text-[10px] text-indigo-600 font-bold uppercase">Lead Engineer</p>
-                                </div>
-                            </div>
-                            <div class="p-4 border border-slate-100 rounded-xl flex items-center gap-4 bg-slate-50/50">
-                                <div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">SK</div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-900">Suresh Kumar</p>
-                                    <p class="text-[10px] text-emerald-600 font-bold uppercase">Senior Support</p>
-                                </div>
-                            </div>
-                            <div class="p-4 border border-slate-100 rounded-xl flex items-center gap-4 bg-slate-50/50">
-                                <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center text-white font-bold">JD</div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-900">John Doe</p>
-                                    <p class="text-[10px] text-orange-600 font-bold uppercase">System Admin</p>
                                 </div>
                             </div>
                         </div>
@@ -163,47 +152,11 @@
                                             <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full font-bold text-[10px] uppercase">P1 - Critical</span>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <div class="font-bold text-slate-900">15 Minutes</div>
-                                            <div class="text-[10px] text-slate-400">Acknowledge within 0.25h</div>
+                                            <div class="font-bold text-slate-900" th:text="${(selectedProject.slaHours / 4.0) + ' Hours'}">15 Minutes</div>
+                                            <div class="text-[10px] text-slate-400" th:text="${'Acknowledge based on ' + selectedProject.name + ' SLA'}">Acknowledge within 0.25h</div>
                                         </td>
-                                        <td class="px-6 py-4 text-slate-900 font-bold">2 Hours</td>
+                                        <td class="px-6 py-4 text-slate-900 font-bold" th:text="${(selectedProject.slaHours / 2.0) + ' Hours'}">2 Hours</td>
                                         <td class="px-6 py-4 text-slate-500">Business Stopped / Site Down</td>
-                                        <td class="px-6 py-4"><button class="text-indigo-600 font-bold hover:underline">Edit</button></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-bold text-[10px] uppercase">P2 - High</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-slate-900">30 Minutes</div>
-                                            <div class="text-[10px] text-slate-400">Acknowledge within 0.5h</div>
-                                        </td>
-                                        <td class="px-6 py-4 text-slate-900 font-bold">4 Hours</td>
-                                        <td class="px-6 py-4 text-slate-500">Major Impairment / Department Down</td>
-                                        <td class="px-6 py-4"><button class="text-indigo-600 font-bold hover:underline">Edit</button></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-bold text-[10px] uppercase">P3 - Medium</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-slate-900">1 Hour</div>
-                                            <div class="text-[10px] text-slate-400">Acknowledge within 1.0h</div>
-                                        </td>
-                                        <td class="px-6 py-4 text-slate-900 font-bold">8 Hours</td>
-                                        <td class="px-6 py-4 text-slate-500">Partial Workaround / Multiple Users</td>
-                                        <td class="px-6 py-4"><button class="text-indigo-600 font-bold hover:underline">Edit</button></td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full font-bold text-[10px] uppercase">P4 - Low</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-slate-900">4 Hours</div>
-                                            <div class="text-[10px] text-slate-400">Acknowledge within 4.0h</div>
-                                        </td>
-                                        <td class="px-6 py-4 text-slate-900 font-bold">24 Hours</td>
-                                        <td class="px-6 py-4 text-slate-500">Individual Issue / Enhancement</td>
                                         <td class="px-6 py-4"><button class="text-indigo-600 font-bold hover:underline">Edit</button></td>
                                     </tr>
                                 </tbody>
@@ -214,5 +167,12 @@
             </div>
         </main>
     </div>
+
+    <script>
+        document.getElementById('projectSelector').addEventListener('change', function() {
+            const projectId = this.value;
+            window.location.href = '/config?projectId=' + projectId;
+        });
+    </script>
 </body>
 </html>

@@ -16,7 +16,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     Back to Tickets
                 </a>
-                <h1 class="text-3xl font-bold text-slate-900 mt-2" th:text="${ticket.id == null or ticket.id == '' ? 'Create New IT Ticket' : 'Update Ticket #' + ticket.id}"></h1>
+                <h1 class="text-3xl font-bold text-slate-900 mt-2" th:text="${ticket.id == null ? 'Create New IT Ticket' : 'Update Ticket #' + ticket.id}"></h1>
             </div>
         </div>
 
@@ -35,7 +35,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Ticket ID</label>
-                                <input th:value="${(ticket.id == null or ticket.id == '') ? 'TICKET-(Auto)' : '#' + ticket.id}" disabled class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 font-mono outline-none">
+                                <input th:value="${ticket.id == null ? 'TICKET-(Auto)' : '#' + ticket.id}" disabled class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-500 font-mono outline-none">
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Status</label>

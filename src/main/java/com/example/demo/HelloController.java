@@ -23,15 +23,22 @@ public class HelloController {
 
     @GetMapping("/")
     public String dashboard(@RequestParam(required = false, defaultValue = "all") String project, Model model) {
-        List<Ticket> filteredTickets = project.equals("all") 
-            ? ticketRepository.findAll()
-            : ticketRepository.findByProjectId(project);
+        List<Ticket> filteredTickets;
+        if ("all".equals(project)) {
+            filteredTickets = ticketRepository.findAll();
+        } else {
+            try {
+                filteredTickets = ticketRepository.findByProjectId(Long.parseLong(project));
+            } catch (NumberFormatException e) {
+                filteredTickets = ticketRepository.findAll();
+            }
+        }
 
         List<Project> projects = projectRepository.findAll();
 
         model.addAttribute("tickets", filteredTickets);
         model.addAttribute("projects", projects);
-        model.addAttribute("selectedProject", project);
+        model.addAttribute("selectedProject", project); // Ensure this matches what template expects
         
         // Simple Stats
         long open = filteredTickets.stream().filter(t -> !"Resolved".equals(t.getStatus())).count();
@@ -81,8 +88,24 @@ public class HelloController {
     }
 
     @GetMapping("/config")
-    public String config(Model model) {
-        model.addAttribute("projects", projectRepository.findAll());
+    public String config(@RequestParam(required = false) Long projectId, Model model) {
+        List<Project> projects = projectRepository.findAll();
+        Project selected = null;
+        
+        if (projectId != null) {
+            final Long id = projectId;
+            selected = projects.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+        }
+        
+        if (selected == null && !projects.isEmpty()) {
+            selected = projects.get(0);
+        }
+        
+        model.addAttribute("projects", projects);
+        model.addAttribute("selectedProject", selected);
         return "config";
     }
 

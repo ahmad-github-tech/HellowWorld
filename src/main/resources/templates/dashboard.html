@@ -31,7 +31,7 @@
                 <form action="/" method="get" class="flex items-center gap-4">
                     <select name="project" onchange="this.form.submit()" class="bg-white border rounded-lg px-4 py-2 text-sm font-bold shadow-sm outline-none focus:ring-2 ring-indigo-500">
                         <option value="all">All Projects</option>
-                        <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}" th:selected="${p.id == selectedProject}"></option>
+                        <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.name}" th:selected="${p.id.toString() == selectedProject}"></option>
                     </select>
                 </form>
             </div>
